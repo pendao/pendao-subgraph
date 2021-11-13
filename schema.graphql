@@ -1,0 +1,147 @@
+type DailyBond @entity {
+  id: ID!
+  timestamp: BigInt!
+  token: Token!
+  amount: BigDecimal!
+  value: BigDecimal!
+}
+
+type Penie @entity {
+  id: ID!
+  bondDeposits: [Deposit!]! @derivedFrom(field: "penie")
+  bondRedemptions: [Redemption!]! @derivedFrom(field: "penie")
+  stakeTransactions: [Stake!]! @derivedFrom(field: "penie")
+  unstakeTransactions: [Unstake!]! @derivedFrom(field: "penie")
+  historicBalance: [PenieBalance!]! @derivedFrom(field: "penie")
+  lastBalance: PenieBalance
+  active: Boolean!
+}
+
+type PenieBalance @entity {
+  id: ID!
+  penie: Penie!
+  spenBalance: BigDecimal!
+  penBalance: BigDecimal!
+  bondBalance: BigDecimal!
+  dollarBalance: BigDecimal!
+  stakes: [ContractInfo!]
+  bonds: [ContractInfo!]
+  timestamp: BigInt!
+}
+
+type Deposit @entity {
+  id: ID!
+  transaction: Transaction!
+  penie: Penie!
+  amount: BigDecimal!
+  maxPremium: BigDecimal!
+  token: Token!
+  value: BigDecimal!
+  timestamp: BigInt!
+}
+
+type Redemption @entity {
+  id: ID!
+  transaction: Transaction
+  penie: Penie
+  token: Token
+  timestamp: BigInt
+}
+
+type Stake @entity {
+  id: ID!
+  transaction: Transaction!
+  penie: Penie!
+  amount: BigDecimal!
+  timestamp: BigInt!
+}
+
+type Unstake @entity {
+  id: ID!
+  transaction: Transaction!
+  penie: Penie!
+  amount: BigDecimal!
+  timestamp: BigInt!
+}
+
+type Rebase @entity {
+  id: ID!
+  transaction: String!
+  amount: BigDecimal!
+  stakedPens: BigDecimal!
+  percentage: BigDecimal!
+  contract: String!
+  timestamp: BigInt!
+  value: BigDecimal!
+}
+
+type DailyStakingReward @entity {
+  id: ID!
+  timestamp: BigInt!
+  amount: BigDecimal!
+  value: BigDecimal!
+}
+
+type Transaction @entity {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  blockHash: Bytes!
+  from: Bytes!
+  to: Bytes
+  value: BigInt!
+  gasUsed: BigInt!
+  gasPrice: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+}
+
+type ProtocolMetric @entity {
+  id: ID!
+  timestamp: BigInt!
+  penCirculatingSupply: BigDecimal!
+  sPenCirculatingSupply: BigDecimal!
+  totalSupply: BigDecimal!
+  penPrice: BigDecimal!
+  marketCap: BigDecimal!
+  totalValueLocked: BigDecimal!
+  treasuryRiskFreeValue: BigDecimal!
+  treasuryMarketValue: BigDecimal!
+  nextEpochRebase: BigDecimal!
+  nextDistributedPen: BigDecimal!
+  treasuryUsdtRiskFreeValue: BigDecimal!
+  treasuryUsdtMarketValue: BigDecimal!
+  currentAPY: BigDecimal!
+  runway2dot5k: BigDecimal
+  runway5k: BigDecimal
+  runway7dot5k: BigDecimal
+  runway10k: BigDecimal
+  runway20k: BigDecimal
+  runway50k: BigDecimal
+  runway70k: BigDecimal
+  runway100k: BigDecimal
+  runwayCurrent: BigDecimal
+  treasuryPenUsdtPOL: BigDecimal!
+  holders: BigInt!
+}
+
+type ContractInfo @entity {
+  id: ID!
+  name: String
+  contract: String
+  amount: BigDecimal
+}
+
+type Aux @entity {
+  id: ID!
+  value: BigInt!
+}
+
+type BondDiscount @entity {
+  id: ID!
+  timestamp: BigInt!
+  usdt_discount: BigDecimal!
+  penusdt_discount: BigDecimal!
+}

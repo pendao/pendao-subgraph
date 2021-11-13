@@ -1,0 +1,121 @@
+specVersion: 0.0.2
+description: Pen DAO Subgraph
+repository: https://github.com/PenDAO/pendao-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: PenStaking
+    network: mainnet
+    source:
+      address: '0xAB9C0453919BAA38c33FBF10414c69cBBa327d57'
+      abi: PenStaking
+      startBlock: 5280361
+      
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - PenStaking
+      abis:
+        - name: PenStaking
+          file: ./abis/PenStaking.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: CirculatingSupply
+          file: ./abis/CirculatingSupply.json
+      callHandlers:
+        - function: stake(uint256,address)
+          handler: handleStake
+        - function: unstake(uint256,bool)
+          handler: handleUnstake
+      file: ./src/PenStaking.ts
+  - kind: ethereum/contract
+    name: PenStakingHelper
+    network: mainnet
+    source:
+      address: '0x91A1B8f0d62Dea86f8f69e97045Dc7e9F65d2dF0'
+      abi: PenStakingHelper
+      startBlock: 5291670
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - PenStakingHelper
+      abis:
+        - name: PenStakingHelper
+          file: ./abis/PenStakingHelper.json
+      callHandlers:
+        - function: stake(uint256)
+          handler: handleStake
+      file: ./src/PenStakingHelper.ts
+  - kind: ethereum/contract
+    name: USDTBond
+    network: mainnet
+    source:
+      address: '0x9286B734756fC9961136977442E6739A044414D3'
+      abi: Bond
+      startBlock: 5280397
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Bond
+      abis:
+        - name: Bond
+          file: ./abis/Bond.json
+      callHandlers:
+        - function: deposit(uint256,uint256,address)
+          handler: handleDeposit
+        - function: redeem(address,bool)
+          handler: handleRedeem
+      file: ./src/Bond.ts
+  - kind: ethereum/contract
+    name: PENUSDTBond
+    network: mainnet
+    source:
+      address: '0x54fE6c965497b92eA539625c7cA319C69F48833d'
+      abi: Bond
+      startBlock: 5280589
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Bond
+      abis:
+        - name: Bond
+          file: ./abis/Bond.json
+      callHandlers:
+        - function: deposit(uint256,uint256,address)
+          handler: handleDeposit
+        - function: redeem(address,bool)
+          handler: handleRedeem
+      file: ./src/Bond.ts
+  - kind: ethereum/contract
+    name: sPen
+    network: mainnet
+    source:
+      address: '0x04f2694c8fcee23e8fd0dfea1d4f5bb8c352111f'
+      abi: sPen
+      startBlock: 12622596
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - sPen
+      abis:
+        - name: sPen
+          file: ./abis/sPen.json
+        - name: Pen
+          file: ./abis/Pen.json
+        - name: UniswapV2Pair
+          file: ./abis/UniswapV2Pair.json
+      callHandlers:
+        - function: rebase(uint256,uint256)
+          handler: rebaseFunction
+      file: ./src/sPen.ts
