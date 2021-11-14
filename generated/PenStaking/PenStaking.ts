@@ -10,6 +10,28 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class Claimed extends ethereum.Event {
+  get params(): Claimed__Params {
+    return new Claimed__Params(this);
+  }
+}
+
+export class Claimed__Params {
+  _event: Claimed;
+
+  constructor(event: Claimed) {
+    this._event = event;
+  }
+
+  get _amount(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get _recipient(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
 export class OwnershipPulled extends ethereum.Event {
   get params(): OwnershipPulled__Params {
     return new OwnershipPulled__Params(this);
@@ -51,6 +73,46 @@ export class OwnershipPushed__Params {
 
   get newOwner(): Address {
     return this._event.parameters[1].value.toAddress();
+  }
+}
+
+export class Staked extends ethereum.Event {
+  get params(): Staked__Params {
+    return new Staked__Params(this);
+  }
+}
+
+export class Staked__Params {
+  _event: Staked;
+
+  constructor(event: Staked) {
+    this._event = event;
+  }
+
+  get _amount(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get _recipient(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
+export class Unstake extends ethereum.Event {
+  get params(): Unstake__Params {
+    return new Unstake__Params(this);
+  }
+}
+
+export class Unstake__Params {
+  _event: Unstake;
+
+  constructor(event: Unstake) {
+    this._event = event;
+  }
+
+  get _amount(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
   }
 }
 

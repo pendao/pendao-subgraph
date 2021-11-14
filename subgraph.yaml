@@ -10,7 +10,7 @@ dataSources:
     source:
       address: '0xAB9C0453919BAA38c33FBF10414c69cBBa327d57'
       abi: PenStaking
-      startBlock: 5280361
+      startBlock: 5280265
       
     mapping:
       kind: ethereum/events
@@ -25,39 +25,19 @@ dataSources:
           file: ./abis/ERC20.json
         - name: CirculatingSupply
           file: ./abis/CirculatingSupply.json
-      callHandlers:
-        - function: stake(uint256,address)
+      eventHandlers:
+        - event: Staked(uint256,address)
           handler: handleStake
-        - function: unstake(uint256,bool)
+        - event: Unstake(uint256)
           handler: handleUnstake
       file: ./src/PenStaking.ts
-  - kind: ethereum/contract
-    name: PenStakingHelper
-    network: mainnet
-    source:
-      address: '0x91A1B8f0d62Dea86f8f69e97045Dc7e9F65d2dF0'
-      abi: PenStakingHelper
-      startBlock: 5291670
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities:
-        - PenStakingHelper
-      abis:
-        - name: PenStakingHelper
-          file: ./abis/PenStakingHelper.json
-      callHandlers:
-        - function: stake(uint256)
-          handler: handleStake
-      file: ./src/PenStakingHelper.ts
   - kind: ethereum/contract
     name: USDTBond
     network: mainnet
     source:
       address: '0x9286B734756fC9961136977442E6739A044414D3'
       abi: Bond
-      startBlock: 5280397
+      startBlock: 5200001
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -67,10 +47,10 @@ dataSources:
       abis:
         - name: Bond
           file: ./abis/Bond.json
-      callHandlers:
-        - function: deposit(uint256,uint256,address)
+      eventHandlers:
+        - event: BondCreated(uint256,indexed uint256,indexed uint256,indexed uint256)
           handler: handleDeposit
-        - function: redeem(address,bool)
+        - event: BondRedeemed(indexed address,uint256,uint256)
           handler: handleRedeem
       file: ./src/Bond.ts
   - kind: ethereum/contract
@@ -89,19 +69,19 @@ dataSources:
       abis:
         - name: Bond
           file: ./abis/Bond.json
-      callHandlers:
-        - function: deposit(uint256,uint256,address)
+      eventHandlers:
+        - event: BondCreated(uint256,indexed uint256,indexed uint256,indexed uint256)
           handler: handleDeposit
-        - function: redeem(address,bool)
+        - event: BondRedeemed(indexed address,uint256,uint256)
           handler: handleRedeem
       file: ./src/Bond.ts
   - kind: ethereum/contract
     name: sPen
     network: mainnet
     source:
-      address: '0x04f2694c8fcee23e8fd0dfea1d4f5bb8c352111f'
+      address: '0x33B35b605d090d5D874BF93A9eE46a3F9F7f7081'
       abi: sPen
-      startBlock: 12622596
+      startBlock: 5280265
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -115,7 +95,7 @@ dataSources:
           file: ./abis/Pen.json
         - name: UniswapV2Pair
           file: ./abis/UniswapV2Pair.json
-      callHandlers:
-        - function: rebase(uint256,uint256)
+      eventHandlers:
+        - event: LogRebase(indexed uint256,uint256,uint256,uint256)
           handler: rebaseFunction
       file: ./src/sPen.ts

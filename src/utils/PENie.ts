@@ -79,7 +79,7 @@ export function updatePenieBalance(
     penie.active = true;
   }
 
-  //PEN-DAI
+  //PEN-USDT
   let bonds = balance.bonds;
 
   let bondPENUsdt_contract = Bond.bind(Address.fromString(PENUSDTLPBOND_TOKEN));
@@ -105,8 +105,6 @@ export function updatePenieBalance(
   }
 
   balance.bonds = bonds;
-
-  //TODO add LUSD and PENLUSD
 
   //Price
   let usdRate = getPENUSDRate();

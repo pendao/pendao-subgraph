@@ -34,7 +34,6 @@ type Deposit @entity {
   transaction: Transaction!
   penie: Penie!
   amount: BigDecimal!
-  maxPremium: BigDecimal!
   token: Token!
   value: BigDecimal!
   timestamp: BigInt!

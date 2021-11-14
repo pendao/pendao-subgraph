@@ -357,15 +357,6 @@ export class Deposit extends Entity {
     this.set("amount", Value.fromBigDecimal(value));
   }
 
-  get maxPremium(): BigDecimal {
-    let value = this.get("maxPremium");
-    return value.toBigDecimal();
-  }
-
-  set maxPremium(value: BigDecimal) {
-    this.set("maxPremium", Value.fromBigDecimal(value));
-  }
-
   get token(): string {
     let value = this.get("token");
     return value.toString();
