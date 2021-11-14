@@ -8,6 +8,7 @@ import {
   PENUSDTLPBOND_TOKEN,
   PEN_CONTRACT,
   SPEN_CONTRACT,
+  USDTBOND_ADDRESS,
 } from "../utils/Constants";
 import { loadOrCreatePenieBalance } from "./PenieBalances";
 import { toDecimal } from "./Decimals";
@@ -79,30 +80,54 @@ export function updatePenieBalance(
     penie.active = true;
   }
 
-  //PEN-USDT
   let bonds = balance.bonds;
 
-  let bondPENUsdt_contract = Bond.bind(Address.fromString(PENUSDTLPBOND_TOKEN));
-  let pending = bondPENUsdt_contract.bondInfo(Address.fromString(penie.id));
+  // USDT BOND
+  let usdtBond_contract = Bond.bind(Address.fromString(USDTBOND_ADDRESS));
+  let pending = usdtBond_contract.bondInfo(Address.fromString(penie.id));
   if (pending.value1.gt(BigInt.fromString("0"))) {
     let pending_bond = toDecimal(pending.value1, 9);
     balance.bondBalance = balance.bondBalance.plus(pending_bond);
 
     let binfo = loadOrCreateContractInfo(
-      penie.id + transaction.timestamp.toString() + "PENUSDT"
+      penie.id + transaction.timestamp.toString() + "USDBond"
     );
-    binfo.name = "PEN-USDT";
-    binfo.contract = PENUSDTLPBOND_TOKEN;
+    binfo.name = "USDT";
+    binfo.contract = USDTBOND_ADDRESS;
     binfo.amount = pending_bond;
     binfo.save();
     bonds.push(binfo.id);
 
-    log.debug("Penie {} pending PENUSDT {} on tx {}", [
+    log.debug("Penie {} pending USDBond V1 {} on tx {}", [
       penie.id,
       toDecimal(pending.value1, 9).toString(),
       transaction.id,
     ]);
   }
+
+  //PEN-USDT
+
+  // let bondPENUsdt_contract = Bond.bind(Address.fromString(PENUSDTLPBOND_TOKEN));
+  // let pending = bondPENUsdt_contract.bondInfo(Address.fromString(penie.id));
+  // if (pending.value1.gt(BigInt.fromString("0"))) {
+  //   let pending_bond = toDecimal(pending.value1, 9);
+  //   balance.bondBalance = balance.bondBalance.plus(pending_bond);
+
+  //   let binfo = loadOrCreateContractInfo(
+  //     penie.id + transaction.timestamp.toString() + "PENUSDT"
+  //   );
+  //   binfo.name = "PEN-USDT";
+  //   binfo.contract = PENUSDTLPBOND_TOKEN;
+  //   binfo.amount = pending_bond;
+  //   binfo.save();
+  //   bonds.push(binfo.id);
+
+  //   log.debug("Penie {} pending PENUSDT {} on tx {}", [
+  //     penie.id,
+  //     toDecimal(pending.value1, 9).toString(),
+  //     transaction.id,
+  //   ]);
+  // }
 
   balance.bonds = bonds;
 
