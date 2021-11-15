@@ -1,13 +1,13 @@
 import { Address } from "@graphprotocol/graph-ts";
 import { Stake, Unstake } from "../generated/schema";
 
-import { Claimed } from "../generated/PenStaking/PenStaking";
+import { Claimed, Staked } from "../generated/PenStaking/PenStaking";
 import { toDecimal } from "./utils/Decimals";
 import { loadOrCreatePENie, updatePenieBalance } from "./utils/PENie";
 import { loadOrCreateTransaction } from "./utils/Transactions";
 import { updateProtocolMetrics } from "./utils/ProtocolMetrics";
 
-export function handleStake(e: Claimed): void {
+export function handleStake(e: Staked): void {
   let penie = loadOrCreatePENie(e.transaction.from as Address);
   let transaction = loadOrCreateTransaction(e.transaction, e.block);
   let value = toDecimal(e.params._amount, 9);

@@ -7,6 +7,7 @@ import { ProtocolMetric, Transaction } from "../../generated/schema";
 import {
   BECO_PENUSDT_PAIR,
   CIRCULATING_SUPPLY_CONTRACT,
+  CIRCULATING_SUPPLY_CONTRACT_BLOCK,
   PEN_CONTRACT,
   SPEN_CONTRACT,
   STAKING_CONTRACT,
@@ -57,17 +58,17 @@ function getTotalSupply(): BigDecimal {
   return total_supply;
 }
 
-function getCriculatingSupply(
-  transaction: Transaction,
-  total_supply: BigDecimal
-): BigDecimal {
-  let circ_supply = BigDecimal.fromString("0");
-  let circulatingsupply_contract = CirculatingSupply.bind(
-    Address.fromString(CIRCULATING_SUPPLY_CONTRACT)
-  );
-  circ_supply = toDecimal(circulatingsupply_contract.PENCirculatingSupply(), 9);
-  log.debug("Circulating Supply {}", [total_supply.toString()]);
-  return circ_supply;
+function getCriculatingSupply(transaction: Transaction, total_supply: BigDecimal): BigDecimal{
+  let circ_supply = BigDecimal.fromString("0")
+  if(transaction.blockNumber.gt(BigInt.fromString(CIRCULATING_SUPPLY_CONTRACT_BLOCK))){
+      let circulatingsupply_contract = CirculatingSupply.bind(Address.fromString(CIRCULATING_SUPPLY_CONTRACT))
+      circ_supply = toDecimal(circulatingsupply_contract.PENCirculatingSupply(), 9)
+  }
+  else{
+      circ_supply = total_supply;
+  }
+  log.debug("Circulating Supply {}", [total_supply.toString()])
+  return circ_supply
 }
 
 function getSpenSupply(transaction: Transaction): BigDecimal {
@@ -132,26 +133,21 @@ function getNextPENRebase(transaction: Transaction): BigDecimal {
 
   return next_distribution;
 }
+function getAPY_Rebase(sPEN: BigDecimal, distributedPEN: BigDecimal): BigDecimal[]{
+  let nextEpochRebase = distributedPEN.div(sPEN).times(BigDecimal.fromString("100"));
 
-function getAPY_Rebase(
-  sPEN: BigDecimal,
-  distributedPEN: BigDecimal
-): BigDecimal[] {
-  let nextEpochRebase = distributedPEN
-    .div(sPEN)
-    .times(BigDecimal.fromString("100"));
+  let nextEpochRebase_number = Number.parseFloat(nextEpochRebase.toString())
+  let currentAPY = Math.pow(((nextEpochRebase_number/100)+1), (365*3)-1)*100
+  if (!isFinite(currentAPY)) {
+    currentAPY = 0
+  }
 
-  let nextEpochRebase_number = Number.parseFloat(nextEpochRebase.toString());
-  let currentAPY =
-    Math.pow(nextEpochRebase_number / 100 + 1, 365 * 3 - 1) * 100;
+  let currentAPYdecimal = BigDecimal.fromString(nextEpochRebase_number.toString())
 
-  let currentAPYdecimal = BigDecimal.fromString(currentAPY.toString());
 
-  log.debug("next_rebase {}", [nextEpochRebase.toString()]);
-  log.debug("current_apy total {}", [currentAPYdecimal.toString()]);
-
-  return [currentAPYdecimal, nextEpochRebase];
+  return [currentAPYdecimal, nextEpochRebase]
 }
+
 
 function getRunway(
   sPEN: BigDecimal,
@@ -247,7 +243,7 @@ export function updateProtocolMetrics(transaction: Transaction): void {
   pm.treasuryUsdtMarketValue = mv_rfv[3];
   pm.treasuryPenUsdtPOL = mv_rfv[4];
 
-  // Rebase rewards, APY, rebase
+  // // Rebase rewards, APY, rebase
   pm.nextDistributedPen = getNextPENRebase(transaction);
   let apy_rebase = getAPY_Rebase(
     pm.sPenCirculatingSupply,

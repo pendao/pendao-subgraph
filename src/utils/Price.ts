@@ -13,7 +13,7 @@ export function getPENUSDRate(): BigDecimal {
   let reserve0 = reserves.value0.toBigDecimal();
   let reserve1 = reserves.value1.toBigDecimal();
 
-  let penRate = reserve1.div(reserve0).div(BIG_DECIMAL_1E9);
+  let penRate = reserve0.div(reserve1).div(BIG_DECIMAL_1E9);
   log.debug("PEN rate {}", [penRate.toString()]);
 
   return penRate;

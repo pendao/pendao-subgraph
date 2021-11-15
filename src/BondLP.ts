@@ -9,6 +9,7 @@ import { USDT_CONTRACT } from "./utils/Constants";
 import { loadOrCreateToken } from "./utils/Tokens";
 import { loadOrCreateRedemption } from "./utils/Redemption";
 import { createDailyBondRecord } from "./utils/DailyBond";
+import { getPairUSD } from "./utils/Price";
 
 export function handleDeposit(e: BondCreated): void {
   let penie = loadOrCreatePENie(e.transaction.from);
@@ -20,7 +21,7 @@ export function handleDeposit(e: BondCreated): void {
   deposit.transaction = transaction.id;
   deposit.penie = penie.id;
   deposit.amount = amount;
-  deposit.value = amount;
+  deposit.value = getPairUSD(e.params.payout, e.address.toHex())
   deposit.token = token.id;
   deposit.timestamp = transaction.timestamp;
   deposit.save();
@@ -41,7 +42,7 @@ export function handleRedeem(e: BondRedeemed): void {
   let redemption = loadOrCreateRedemption(e.transaction.hash as Address);
   redemption.transaction = transaction.id;
   redemption.penie = penie.id;
-  redemption.token = loadOrCreateToken(USDT_CONTRACT).id;
+  redemption.token = loadOrCreateToken(e.address.toHex()).id;
   redemption.timestamp = transaction.timestamp;
   redemption.save();
   updatePenieBalance(penie, transaction);
