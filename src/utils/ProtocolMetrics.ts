@@ -142,7 +142,7 @@ function getAPY_Rebase(sPEN: BigDecimal, distributedPEN: BigDecimal): BigDecimal
     currentAPY = 0
   }
 
-  let currentAPYdecimal = BigDecimal.fromString(nextEpochRebase_number.toString())
+  let currentAPYdecimal = BigDecimal.fromString(currentAPY.toString())
 
 
   return [currentAPYdecimal, nextEpochRebase]
