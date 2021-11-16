@@ -1,6 +1,6 @@
 import { Address } from "@graphprotocol/graph-ts";
 
-import { BondCreated, BondRedeemed } from "../generated/USDTBond/Bond";
+import { Bond, BondCreated, BondRedeemed } from "../generated/USDTBond/Bond";
 import { Deposit } from "../generated/schema";
 import { loadOrCreateTransaction } from "./utils/Transactions";
 import { loadOrCreatePENie, updatePenieBalance } from "./utils/PENie";
@@ -13,7 +13,10 @@ import { createDailyBondRecord } from "./utils/DailyBond";
 export function handleDeposit(e: BondCreated): void {
   let penie = loadOrCreatePENie(e.transaction.from);
   let transaction = loadOrCreateTransaction(e.transaction, e.block);
-  let token = loadOrCreateToken(e.address.toHex());
+  let bond = Bond.bind(e.address)
+  let tokenAddr = bond.principle().toHex();
+
+  let token = loadOrCreateToken(tokenAddr);
 
   let amount = toDecimal(e.params.deposit, 18);
   let deposit = new Deposit(transaction.id);
@@ -38,10 +41,13 @@ export function handleRedeem(e: BondRedeemed): void {
   let penie = loadOrCreatePENie(e.transaction.from);
   let transaction = loadOrCreateTransaction(e.transaction, e.block);
 
+  let bond = Bond.bind(e.address)
+  let tokenAddr = bond.principle().toHex();
+
   let redemption = loadOrCreateRedemption(e.transaction.hash as Address);
   redemption.transaction = transaction.id;
   redemption.penie = penie.id;
-  redemption.token = loadOrCreateToken(USDT_CONTRACT).id;
+  redemption.token = loadOrCreateToken(tokenAddr).id;
   redemption.timestamp = transaction.timestamp;
   redemption.save();
   updatePenieBalance(penie, transaction);

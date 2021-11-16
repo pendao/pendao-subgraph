@@ -8,6 +8,7 @@ import {
   BECO_PENUSDT_PAIR,
   CIRCULATING_SUPPLY_CONTRACT,
   CIRCULATING_SUPPLY_CONTRACT_BLOCK,
+  PENUSDTBOND_CONTRACT_BLOCK,
   PEN_CONTRACT,
   SPEN_CONTRACT,
   STAKING_CONTRACT,
@@ -87,18 +88,27 @@ function getMV_RFV(transaction: Transaction): BigDecimal[] {
 
   let usdtBalance = usdtERC20.balanceOf(Address.fromString(TREASURY_ADDRESS));
 
+
   //PENUSDT
-  let penUsdtBalance = penUsdtPair.balanceOf(
-    Address.fromString(TREASURY_ADDRESS)
-  );
+  let penUsdtBalance = BigInt.fromI32(0)
+  let penUsdtTotalLP =  BigDecimal.fromString("0")
+  let penUsdtPOL = BigDecimal.fromString("0")
+  let penUsdt_value = BigDecimal.fromString("0")
+  let penUsdt_rfv = BigDecimal.fromString("0")
+  if (transaction.blockNumber.gt(BigInt.fromString(PENUSDTBOND_CONTRACT_BLOCK))) {
+    penUsdtBalance = penUsdtPair.balanceOf(
+      Address.fromString(TREASURY_ADDRESS)
+    );
+  
+    penUsdtTotalLP = toDecimal(penUsdtPair.totalSupply(), 18);
+    penUsdtPOL = toDecimal(penUsdtBalance, 18)
+      .div(penUsdtTotalLP)
+      .times(BigDecimal.fromString("100"));
+  
+    penUsdt_value = getPairUSD(penUsdtBalance, BECO_PENUSDT_PAIR);
+    penUsdt_rfv = getDiscountedPairUSD(penUsdtBalance, BECO_PENUSDT_PAIR);
+  }
 
-  let penUsdtTotalLP = toDecimal(penUsdtPair.totalSupply(), 18);
-  let penUsdtPOL = toDecimal(penUsdtBalance, 18)
-    .div(penUsdtTotalLP)
-    .times(BigDecimal.fromString("100"));
-
-  let penUsdt_value = getPairUSD(penUsdtBalance, BECO_PENUSDT_PAIR);
-  let penUsdt_rfv = getDiscountedPairUSD(penUsdtBalance, BECO_PENUSDT_PAIR);
 
   let stableValue = usdtBalance;
   let stableValueDecimal = toDecimal(stableValue, 18);

@@ -46,8 +46,8 @@ export function getPairUSD(lp_amount: BigInt, pair_adress: string): BigDecimal {
   let lp_token_0 = pair.getReserves().value0;
   let lp_token_1 = pair.getReserves().value1;
   let ownedLP = toDecimal(lp_amount, 18).div(toDecimal(total_lp, 18));
-  let pen_value = toDecimal(lp_token_0, 9).times(getPENUSDRate());
-  let total_lp_usd = pen_value.plus(toDecimal(lp_token_1, 18));
+  let pen_value = toDecimal(lp_token_1, 9).times(getPENUSDRate());
+  let total_lp_usd = pen_value.plus(toDecimal(lp_token_0, 18));
 
   return ownedLP.times(total_lp_usd);
 }

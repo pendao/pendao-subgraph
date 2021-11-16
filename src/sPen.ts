@@ -22,7 +22,7 @@ export function rebaseFunction(e: LogRebase): void {
 
     rebase.stakedPens = stakedPens;
     rebase.contract = STAKING_CONTRACT;
-    rebase.percentage = rebase.amount.div(rebase.stakedPens);
+    rebase.percentage =toDecimal(e.params.rebase, 18);
     rebase.transaction = transaction.id;
     rebase.timestamp = transaction.timestamp;
     rebase.value = rebase.amount.times(getPENUSDRate());

@@ -72,36 +72,38 @@ dataSources:
           handler: handleDeposit
         - event: BondRedeemed(indexed address,uint256,uint256)
           handler: handleRedeem
-  # - kind: ethereum/contract
-  #   name: PENUSDTBond
-  #   network: mainnet
-  #   source:
-  #     address: '0x54fE6c965497b92eA539625c7cA319C69F48833d'
-  #     abi: Bond
-  #     startBlock: 5280589
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.4
-  #     language: wasm/assemblyscript
-  #     entities:
-  #       - Bond
-  #     abis:
-  #       - name: Bond
-  #         file: ./abis/Bond.json
-  #       - name: sPen
-  #         file: ./abis/sPen.json
-  #       - name: Pen
-  #         file: ./abis/Pen.json
-  #       - name: Bond
-  #         file: ./abis/Bond.json
-  #       - name: UniswapV2Pair
-  #         file: ./abis/UniswapV2Pair.json
-  #     eventHandlers:
-  #       - event: BondCreated(uint256,indexed uint256,indexed uint256,indexed uint256)
-  #         handler: handleDeposit
-  #       - event: BondRedeemed(indexed address,uint256,uint256)
-  #         handler: handleRedeem
-  #     file: ./src/BondLP.ts
+  - kind: ethereum/contract
+    name: PENUSDTBond
+    network: mainnet
+    source:
+      address: '0x4215F5214a631a3c8B449f96Db50e3a42EcadD96'
+      abi: Bond
+      startBlock: 5340446
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Bond
+      abis:
+        - name: Bond
+          file: ./abis/Bond.json
+        - name: sPen
+          file: ./abis/sPen.json
+        - name: Pen
+          file: ./abis/Pen.json
+        - name: Bond
+          file: ./abis/Bond.json
+        - name: UniswapV2Pair
+          file: ./abis/UniswapV2Pair.json
+        - name: CirculatingSupply
+          file: ./abis/CirculatingSupply.json
+      eventHandlers:
+        - event: BondCreated(uint256,indexed uint256,indexed uint256,indexed uint256)
+          handler: handleDeposit
+        - event: BondRedeemed(indexed address,uint256,uint256)
+          handler: handleRedeem
+      file: ./src/BondLP.ts
   - kind: ethereum/contract
     name: sPen
     network: mainnet
